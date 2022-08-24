@@ -1,6 +1,6 @@
-# Snappy
+# CorgiScroll
 
-Snappy is a tiny library that adds clickable pagination to CSS Scroll Snap sliders. Just choose which elements to apply, and you're away! 
+CorgiScroll is a tiny library that adds clickable pagination to CSS Scroll Snap sliders. Just choose which elements to apply, and you're away! 
 
 ![alt text](preview.webp)
 
