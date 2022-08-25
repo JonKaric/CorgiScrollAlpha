@@ -4,6 +4,7 @@ import { Options, Pagination } from '../types/types';
 export function PaginationDot(options: Options, pagination: Pagination ) {
     
     let current = 0;
+    let paused = false;
 
     build();
     initEvents();
@@ -23,29 +24,36 @@ export function PaginationDot(options: Options, pagination: Pagination ) {
 
     function initEvents() {
         options.pagination.addEventListener('click', handleClick)
-        options.pagination.addEventListener('scroll', handleScroll)
+        options.root.addEventListener('scroll', handleScroll)
     }
 
     function handleClick(e: Event) {
-
+        paused = true;
+        
         const getLeftPosition = (index: number) => {
             return pagination.slides[index].snapPoint 
         }
         
         if (e.target.getAttribute('data-index')) {
             const slide: number = parseInt(e.target.getAttribute('data-index'))
-            console.log(pagination.slides[slide].snapPoint);
+            updateActive(slide);
             options.root.scrollTo({
                 top: 0,
                 left: getLeftPosition(slide),
                 behavior: 'smooth'
             })
         }
+
+        setTimeout(() => {
+            paused = false;
+        }, 750);
     }
 
 
     function handleScroll() {
         
+        if (paused) return;
+
         const getMaxScroll = () => {
             return options.root.scrollWidth - options.rootBounds.width
         }
@@ -61,10 +69,6 @@ export function PaginationDot(options: Options, pagination: Pagination ) {
             else return prev
         })
 
-
-        // console.log(pagination.slides);
-        
-
         const closestNumber = closest(
             pagination.slides.map(
                 page => page.snapPoint
@@ -76,13 +80,21 @@ export function PaginationDot(options: Options, pagination: Pagination ) {
             return slide.snapPoint === closestNumber;
         });
     
-        handlePagination(currentIndex);
+        updateActive(currentIndex);
     }
 
-    function handlePagination(currentIndex: number) {
-        pagination.el!.children[current].classList.remove('active')
-        pagination.el!.children[currentIndex].classList.add('active')
+    function updateActive(currentIndex: number) {
+        console.log('hi');
+
+        console.log(options.pagination);
+        
+        
+        options.pagination!.children[current].classList.remove('active')
+        options.pagination!.children[currentIndex].classList.add('active')
         current = currentIndex;
     }
+
+
+    
 
 }

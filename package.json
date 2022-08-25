@@ -21,5 +21,8 @@
     "last 1 version",
     "> 1%",
     "IE 10"
-  ]
+  ],
+  "dependencies": {
+    "ev-emitter": "^2.1.2"
+  }
 }
