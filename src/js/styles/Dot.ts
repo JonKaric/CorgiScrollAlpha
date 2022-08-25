@@ -13,6 +13,7 @@ export function PaginationDot(options: Options, pagination: Pagination ) {
         const html = `
             ${
                 pagination.slides.map((slide: HTMLElement, index: number) => {
+                    if (index === 0) return `<button class="corgiscroll__pagination-dot active" data-index="${index}"><span class="">${index}</span></button>`
                     return `<button class="corgiscroll__pagination-dot" data-index="${index}"><span class="">${index}</span></button>`
                 }).join('')
             }
@@ -28,7 +29,9 @@ export function PaginationDot(options: Options, pagination: Pagination ) {
     }
 
     function handleClick(e: Event) {
-        paused = true;
+
+        // if (paused) return
+
         
         const getLeftPosition = (index: number) => {
             return pagination.slides[index].snapPoint 
@@ -36,17 +39,13 @@ export function PaginationDot(options: Options, pagination: Pagination ) {
         
         if (e.target.getAttribute('data-index')) {
             const slide: number = parseInt(e.target.getAttribute('data-index'))
-            updateActive(slide);
+            // updateActive(slide);
             options.root.scrollTo({
                 top: 0,
                 left: getLeftPosition(slide),
                 behavior: 'smooth'
             })
         }
-
-        setTimeout(() => {
-            paused = false;
-        }, 750);
     }
 
 
