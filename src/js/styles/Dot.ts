@@ -26,15 +26,11 @@ export function PaginationDot(options: Options, pagination: Pagination ) {
         options.pagination.addEventListener('scroll', handleScroll)
     }
 
-
     function handleClick(e: Event) {
 
         const getLeftPosition = (index: number) => {
             return pagination.slides[index].snapPoint 
         }
-
-        console.log(e);
-        
         
         if (e.target.getAttribute('data-index')) {
             const slide: number = parseInt(e.target.getAttribute('data-index'))
@@ -49,6 +45,7 @@ export function PaginationDot(options: Options, pagination: Pagination ) {
 
 
     function handleScroll() {
+        
         const getMaxScroll = () => {
             return options.root.scrollWidth - options.rootBounds.width
         }
@@ -57,7 +54,7 @@ export function PaginationDot(options: Options, pagination: Pagination ) {
          * 
          * @param array Array that you want to look inside
          * @param goal The nunmber you want to find the closest of
-         * @returns number The number that is closes to your goal in the array 
+         * @returns The number that is closest to your goal in the array 
          */
         const closest = (array: (number)[], goal: number) => array.reduce((prev, curr) => {
             if (goal >= getMaxScroll() || curr <= goal) return curr
