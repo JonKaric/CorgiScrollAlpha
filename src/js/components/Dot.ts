@@ -1,15 +1,23 @@
 import { Options, Pagination } from '../types/types';
+import Events from './../Events'
 
-
-export function PaginationDot(options: Options, pagination: Pagination ) {
+export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pagination ) {
     
+
+    const events = Events(CorgiScroll)
+    const { on, emit } = events
+
     let current = 0;
     let paused = false;
+    
 
     build();
     initEvents();
 
     function build() {
+        const el = document.createElement('div')
+        el.classList.add('corgiscroll-pagination')
+
         const html = `
             ${
                 pagination.slides.map((slide: HTMLElement, index: number) => {
@@ -19,38 +27,23 @@ export function PaginationDot(options: Options, pagination: Pagination ) {
             }
         `
 
-        options.pagination.innerHTML = html;
+        el.innerHTML = html;
+        CorgiScroll.pagination.el = el;
+        CorgiScroll.root.after(el)
 
     }
 
     function initEvents() {
-        options.pagination.addEventListener('click', handleClick)
-        options.root.addEventListener('scroll', handleScroll)
+        pagination.el!.addEventListener('click', handleClick)
     }
 
     function handleClick(e: Event) {
-
-        // if (paused) return
-
-        
-        const getLeftPosition = (index: number) => {
-            return pagination.slides[index].snapPoint 
-        }
-        
         if (e.target.getAttribute('data-index')) {
-            const slide: number = parseInt(e.target.getAttribute('data-index'))
-            // updateActive(slide);
-            options.root.scrollTo({
-                top: 0,
-                left: getLeftPosition(slide),
-                behavior: 'smooth'
-            })
+            CorgiScroll.go(parseInt(e.target.getAttribute('data-index')))
         }
     }
 
-
-    function handleScroll() {
-        
+    on('scroll', () => {
         if (paused) return;
 
         const getMaxScroll = () => {
@@ -78,22 +71,23 @@ export function PaginationDot(options: Options, pagination: Pagination ) {
         const currentIndex = Array.from(pagination.slides).findIndex(slide => {
             return slide.snapPoint === closestNumber;
         });
-    
-        updateActive(currentIndex);
-    }
+        
+        emit('update_active', currentIndex)
+    })
 
-    function updateActive(currentIndex: number) {
+    on('update_active', (currentIndex: number) => {
+        CorgiScroll.pagination.el.children[current].classList.remove('active')
+        CorgiScroll.pagination.el.children[currentIndex].classList.add('active')
+        current = currentIndex;
+    })
+
+    on('refresh', () => {
         console.log('hi');
 
-        console.log(options.pagination);
+        console.log(CorgiScroll.pagination.el);
         
         
-        options.pagination!.children[current].classList.remove('active')
-        options.pagination!.children[currentIndex].classList.add('active')
-        current = currentIndex;
-    }
-
-
-    
-
+        CorgiScroll.pagination.el.remove();
+        build();
+    })
 }

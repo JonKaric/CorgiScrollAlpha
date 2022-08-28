@@ -4,6 +4,22 @@ CorgiScroll is a tiny library that adds clickable pagination to CSS Scroll Snap 
 
 ![alt text](preview.webp)
 
+## Prerequisites
+- Currently only supports the `page` mode. `page` mode works out how many slides are on a 'page' (which is the container the slides are inside) and generates the pagination from that information. 
+> Eg. There are 10 slides, with 5 visible in the container at any one time so there will be 2 dots. In `slide` mode there would be 10. 
+- Currently only supports `scroll-snap-align: start`
+- `scroll-snap-align` needs to be the same for all slides. Mixing values will produce unexpected results
+- 
+
+## Roadmap
+- Support for `scroll-snap-align: center`
+- Support for `scroll-snap-align: end`
+- Support for different 'styles' of pagination
+    - Percentage bar
+    - Scroll bar 
+    - Numbered (eg 2/3)
+- Adding a drag functionality so we can drag on desktops
+
 
 ## Installation
 To get started you can either 

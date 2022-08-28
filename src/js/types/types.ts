@@ -2,10 +2,10 @@ export interface Options {
     
     root: HTMLElement;
     rootBounds: any;
-    pagination: HTMLElement;
 
     snapType: string;
-
+    arrowLeftHtml: string;
+    arrowRightHtml:  string;
 
     /**
      * Determines how the pagination will be build. If 'page' is choses then corgiscroll will generate
@@ -33,6 +33,5 @@ export interface Options {
 
 export interface Pagination {
     el: HTMLElement | null;
-
     slides: any;
 }
