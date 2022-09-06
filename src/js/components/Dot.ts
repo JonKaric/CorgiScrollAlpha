@@ -8,7 +8,6 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
     const { on, emit } = events
 
     let current = 0;
-    let paused = false;
     
 
     build();
@@ -20,7 +19,8 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
 
         const html = `
             ${
-                pagination.slides.map((slide: HTMLElement, index: number) => {
+                // @ts-ignore
+                pagination.slides.map((slide, index: number) => {
                     if (index === 0) return `<button class="corgiscroll__pagination-dot active" data-index="${index}"><span class="">${index}</span></button>`
                     return `<button class="corgiscroll__pagination-dot" data-index="${index}"><span class="">${index}</span></button>`
                 }).join('')
@@ -29,7 +29,7 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
 
         el.innerHTML = html;
         CorgiScroll.pagination.el = el;
-        CorgiScroll.root.after(el)
+        CorgiScroll.slideContainer.after(el)
 
     }
 
@@ -38,16 +38,18 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
     }
 
     function handleClick(e: Event) {
-        if (e.target.getAttribute('data-index')) {
-            CorgiScroll.go(parseInt(e.target.getAttribute('data-index')))
+        const target = e.target as HTMLElement;
+        if (target.getAttribute('data-index')) {
+            //TODO: Fix this type 
+            // @ts-ignore
+            CorgiScroll.go(parseInt(target.getAttribute('data-index')))
         }
     }
 
     on('scroll', () => {
-        if (paused) return;
 
         const getMaxScroll = () => {
-            return options.root.scrollWidth - options.rootBounds.width
+            return CorgiScroll.slideContainer.scrollWidth - options.rootBounds.width
         }
 
         /**
@@ -63,12 +65,12 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
 
         const closestNumber = closest(
             pagination.slides.map(
-                page => page.snapPoint
+                (page: any /* TODO: Fix this type */) => page.snapPoint
             ), 
-            options.root.scrollLeft
+            CorgiScroll.slideContainer.scrollLeft
         );
 
-        const currentIndex = Array.from(pagination.slides).findIndex(slide => {
+        const currentIndex = Array.from(pagination.slides).findIndex((slide: any /* TODO: Fix this type */) => {
             return slide.snapPoint === closestNumber;
         });
         
@@ -82,11 +84,6 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
     })
 
     on('refresh', () => {
-        console.log('hi');
-
-        console.log(CorgiScroll.pagination.el);
-        
-        
         CorgiScroll.pagination.el.remove();
         build();
     })

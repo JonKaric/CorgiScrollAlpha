@@ -10,6 +10,7 @@ import Events from './Events';
 export default class CorgiScroll {
 
     root: HTMLElement
+    slideContainer: HTMLElement // TODO: Fix this type
     rootBounds: any = {}
     options: any = {}
     pagination: Pagination
@@ -21,7 +22,9 @@ export default class CorgiScroll {
 
     constructor(root: HTMLElement, options: Options) {
         this.root = root
-        this.rootBounds = this.root.getBoundingClientRect()
+        // @ts-ignore  // TODO: Fix this type
+        this.slideContainer = this.root.children[0]
+        this.rootBounds = this.slideContainer.getBoundingClientRect()
         this.windowWidth = window.innerWidth
         this.active = 0
 
@@ -30,7 +33,7 @@ export default class CorgiScroll {
             rootBounds: this.rootBounds,
             style: 'dot',
             type: 'page',
-            snapType: getComputedStyle(this.root.children[0]).getPropertyValue('scroll-snap-align'),
+            snapType: getComputedStyle(this.root.children[0].children[0]).getPropertyValue('scroll-snap-align'),
             arrowLeftHtml: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"><g><line x1="13.5" y1="7" x2="0.5" y2="7" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"></line><polyline points="4 3.5 0.5 7 4 10.5" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"></polyline></g></svg>',
             arrowRightHtml: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"><g><line x1="0.5" y1="7" x2="13.5" y2="7" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"></line><polyline points="10 10.5 13.5 7 10 3.5" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"></polyline></g></svg>',
         }
@@ -39,7 +42,7 @@ export default class CorgiScroll {
 
         this.pagination = {
             el: null,
-            slides: FindSteps(this.options, this.root)
+            slides: FindSteps(this, this.options, this.slideContainer)
         }
 
         const event = Events(this)
@@ -55,7 +58,7 @@ export default class CorgiScroll {
         this.initialiseSlideClasses()
         window.addEventListener('resize', this.emit('resized'))
         window.addEventListener('resize', this.handleResize)
-        this.root.addEventListener('scroll', () => {
+        this.slideContainer.addEventListener('scroll', () => {
             this.emit('scroll')
         })
 
@@ -67,29 +70,30 @@ export default class CorgiScroll {
         const getLeftPosition = (index: number) => {
             return this.pagination.slides[index].snapPoint 
         }
-        this.root.scrollTo({
+
+        this.slideContainer.scrollTo({
             top: 0,
             left: getLeftPosition(index),
             behavior: 'smooth'
         })
+
+        this.updateActive(index)
     }
 
     next() {
-        const index = () => {
-            if (this.active + 1 > this.pagination.slides.length - 1) return;
-            return this.active + 1;
-        }
-
-        // TODO: Fix this type issue. Idk what it means
-        this.go(index)
+        if ((this.active + 1) >= this.pagination.slides.length) return;
+        this.go(this.active + 1)
     }
 
     prev() {
-        const index = (): number => {
-            if (this.active - 1 < this.pagination.slides.length - 1) return;
-            return this.active + 1;
-        }
-        this.go(index)
+        console.log(this.active - 1);
+        
+        if ((this.active - 1) < 0) return;
+        this.go(this.active - 1)
+    }
+
+    updateActive(index: number) {
+        this.active = index;
     }
 
     handleResize: (ev: Event) => void = debounce(() => {
@@ -98,7 +102,7 @@ export default class CorgiScroll {
             this.windowWidth = window.innerWidth
 
             
-            const calculatedSteps = FindSteps(this.options, this.root);
+            const calculatedSteps = FindSteps(this, this.options, this.slideContainer);
             if (calculatedSteps.length > this.pagination.slides.length || calculatedSteps.length < this.pagination.slides.length) {
                 this.pagination.slides = calculatedSteps
                 this.emit('refresh')
@@ -108,7 +112,7 @@ export default class CorgiScroll {
 
 
     initialiseSlideClasses() {
-        Array.from(this.root.children).forEach((slide, index ) => {
+        Array.from(this.slideContainer.children).forEach((slide, index ) => {
             let info = slide.getBoundingClientRect()
             slide.setAttribute('data-slide', index.toString())
             slide.setAttribute('data-position', info.x.toString())

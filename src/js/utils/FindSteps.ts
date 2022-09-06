@@ -1,6 +1,6 @@
 import { Options } from '../types/types';
 
-export function FindSteps(options: Options, root: HTMLElement) {
+export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement) {
     let pagination: any= [];
     let size: number        = 0
     let page: number        = 0
@@ -52,18 +52,46 @@ export function FindSteps(options: Options, root: HTMLElement) {
         return 0;
     }
 
-    Array.from(root.children).forEach((slide, index) => {
-        size += slideWidth(slide);
-        if (size > getContainerSize() || index === 0) {
-            page++
-            size = slideWidth(slide)
 
-            pagination.push({
-                el: slide,
-                snapPoint: getTriggerPosition(slide, index),
-            })
-        }
-    })
+    if (CorgiScroll.options.mode === 'slide') {
+        generateSlide()
+    } else {
+        generatePage()
+    }
+
+    console.log(`Scrollwidth: ${ root.scrollWidth }`);
+    console.log(`Scrollwidth - width : ${ (root.scrollWidth - rootRect.width) }`);
+    
+    function generatePage() {
+        Array.from(root.children).forEach((slide, index) => {
+            size += slideWidth(slide);
+            if (size > getContainerSize() || index === 0) {
+                page++
+                size = slideWidth(slide)
+    
+                pagination.push({
+                    el: slide,
+                    snapPoint: getTriggerPosition(slide, index),
+                })
+            }
+        })
+    }
+
+    function generateSlide() {
+        Array.from(root.children).forEach((slide, index) => {
+            console.log(size);
+            
+            if (size < (root.scrollWidth - rootRect.width)) {
+                page++
+    
+                size += slideWidth(slide);
+                pagination.push({
+                    el: slide,
+                    snapPoint: getTriggerPosition(slide, index),
+                })
+            }
+        })
+    }
 
     return pagination
 }
