@@ -15,6 +15,18 @@ export interface Options {
     type: string;
 
     /**
+     * If you want to have the scrollbar on or off
+     */
+    scrollbar: boolean;
+
+
+    /**
+     * If you want to have the arrows on or off
+     */
+    arrows: boolean;
+
+    
+    /**
      * Choose a style of the slider pagination
      * - 'dot'
      * A normal dot style pgination. One dot per slide or per page, depending on the chosen settings

@@ -23,6 +23,7 @@
     "IE 10"
   ],
   "dependencies": {
+    "dotenv": "^16.0.2",
     "ev-emitter": "^2.1.2",
     "rollup-plugin-sourcemaps": "^0.6.3"
   }

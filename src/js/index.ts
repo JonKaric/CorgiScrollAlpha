@@ -49,7 +49,7 @@ export default class CorgiScroll {
         this.on = event.on
         this.emit = event.emit
 
-        Arrows(this, this.options).init();
+        if (options.arrows) Arrows(this, this.options).init();
         this.init()
 
     } 
@@ -86,8 +86,6 @@ export default class CorgiScroll {
     }
 
     prev() {
-        console.log(this.active - 1);
-        
         if ((this.active - 1) < 0) return;
         this.go(this.active - 1)
     }
@@ -98,15 +96,15 @@ export default class CorgiScroll {
 
     handleResize: (ev: Event) => void = debounce(() => {
         if (this.windowWidth < window.innerWidth || this.windowWidth > window.innerWidth) {
-            this.emit('resize')
             this.windowWidth = window.innerWidth
 
-            
             const calculatedSteps = FindSteps(this, this.options, this.slideContainer);
             if (calculatedSteps.length > this.pagination.slides.length || calculatedSteps.length < this.pagination.slides.length) {
                 this.pagination.slides = calculatedSteps
                 this.emit('refresh')
             }
+
+            this.emit('resize')
         }
     }, 200)
 
