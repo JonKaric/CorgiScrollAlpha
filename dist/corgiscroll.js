@@ -39,7 +39,6 @@
          * The active pagination item
          */
         let current = 0;
-        let hasDots = false;
         /**
          *
          * @returns The maximum scroll possible
@@ -72,7 +71,7 @@
         }
         function build() {
             if (pagination.slides.length == 0) {
-                hasDots = false;
+                pagination.el = null;
                 return;
             }
             const el = document.createElement('div');
@@ -91,9 +90,8 @@
         }).join('')}
         `;
             el.innerHTML = html;
-            CorgiScroll.pagination.el = el;
+            pagination.el = el;
             CorgiScroll.slideContainer.after(el);
-            hasDots = true;
             emit('update_active', currentIndex);
         }
         function initEvents() {
@@ -110,16 +108,18 @@
             }
         }
         on('scroll', () => {
+            if (pagination.el === null)
+                return;
             const currentIndex = Array.from(pagination.slides).findIndex((slide /* TODO: Fix this type */) => {
                 return slide.snapPoint === closestNumber();
             });
             emit('update_active', currentIndex);
         });
         function destroy() {
-            if (hasDots) {
-                CorgiScroll.pagination.el.removeEventListener('click', handleClick);
-                CorgiScroll.pagination.el.remove();
-            }
+            if (pagination.el == null)
+                return;
+            CorgiScroll.pagination.el.removeEventListener('click', handleClick);
+            CorgiScroll.pagination.el.remove();
         }
         on('update_active', (currentIndex) => {
             CorgiScroll.pagination.el.children[current].classList.remove('active');

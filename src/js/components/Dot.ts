@@ -13,10 +13,7 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
      * The active pagination item
      */
     let current: number = 0;
-
-    let hasDots: boolean = false;
-
-
+    
     
     /**
      * 
@@ -62,7 +59,7 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
 
         
         if (pagination.slides.length == 0) {
-            hasDots = false;
+            pagination.el = null;
             return;   
         }
 
@@ -91,9 +88,8 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
         `
 
         el.innerHTML = html;
-        CorgiScroll.pagination.el = el;
+        pagination.el = el;
         CorgiScroll.slideContainer.after(el)
-        hasDots = true
 
         emit('update_active', currentIndex)
     }
@@ -114,6 +110,7 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
     }
 
     on('scroll', () => {
+        if (pagination.el === null) return
 
         const currentIndex = Array.from(pagination.slides).findIndex((slide: any /* TODO: Fix this type */) => {
             return slide.snapPoint === closestNumber();
@@ -124,10 +121,9 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
 
 
     function destroy() {
-        if (hasDots) {
-            CorgiScroll.pagination.el.removeEventListener('click', handleClick);
-            CorgiScroll.pagination.el.remove();
-        }
+        if (pagination.el == null) return
+        CorgiScroll.pagination.el.removeEventListener('click', handleClick)
+        CorgiScroll.pagination.el.remove()
     }
 
     on('update_active', (currentIndex: number) => {
