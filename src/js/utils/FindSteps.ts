@@ -4,7 +4,6 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
     let pagination: any= [];
     let size: number        = 0
     let page: number        = 0
-    let prev: number        = 0
     const snapType: string  = options.snapType
     const rootRect = root.getBoundingClientRect();
 
@@ -76,16 +75,22 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
     }
 
     function generateSlide() {
+        let prev = 0;
+
         Array.from(root.children).forEach((slide, index) => {
-            if (size < (root.scrollWidth - rootRect.width)) {
+
+            if (size < (root.scrollWidth - rootRect.width) || (size - prev) < (root.scrollWidth - rootRect.width) ) {
                 page++
     
                 size += slideWidth(slide);
-                prev = 
+                prev = slideWidth(slide);
                 pagination.push({
                     el: slide,
                     snapPoint: getTriggerPosition(slide, index),
                 })
+            } 
+            else {
+                pagination[pagination.length -1].snapPoint = root.scrollWidth;
             }
         })
     }

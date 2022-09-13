@@ -226,14 +226,19 @@
             });
         }
         function generateSlide() {
+            let prev = 0;
             Array.from(root.children).forEach((slide, index) => {
-                if (size < (root.scrollWidth - rootRect.width)) {
+                if (size < (root.scrollWidth - rootRect.width) || (size - prev) < (root.scrollWidth - rootRect.width)) {
                     page++;
                     size += slideWidth(slide);
+                    prev = slideWidth(slide);
                     pagination.push({
-                            el: slide,
-                            snapPoint: getTriggerPosition(slide, index),
-                        });
+                        el: slide,
+                        snapPoint: getTriggerPosition(slide, index),
+                    });
+                }
+                else {
+                    pagination[pagination.length - 1].snapPoint = root.scrollWidth;
                 }
             });
         }
