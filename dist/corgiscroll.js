@@ -39,6 +39,7 @@
          * The active pagination item
          */
         let current = 0;
+        let hasDots = false;
         /**
          *
          * @returns The maximum scroll possible
@@ -70,13 +71,16 @@
             initEvents();
         }
         function build() {
+            if (pagination.slides.length == 0) {
+                hasDots = false;
+                return;
+            }
             const el = document.createElement('div');
             el.classList.add('corgiscroll-pagination');
             const currentIndex = Array.from(pagination.slides).findIndex((slide /* TODO: Fix this type */) => {
                 return slide.snapPoint === closestNumber();
             });
             current = currentIndex;
-            console.log(currentIndex);
             const html = `
             ${
         // @ts-ignore
@@ -89,10 +93,13 @@
             el.innerHTML = html;
             CorgiScroll.pagination.el = el;
             CorgiScroll.slideContainer.after(el);
+            hasDots = true;
             emit('update_active', currentIndex);
         }
         function initEvents() {
-            pagination.el.addEventListener('click', handleClick);
+            if (pagination.el) {
+                pagination.el.addEventListener('click', handleClick);
+            }
         }
         function handleClick(e) {
             const target = e.target;
@@ -109,8 +116,10 @@
             emit('update_active', currentIndex);
         });
         function destroy() {
-            CorgiScroll.pagination.el.removeEventListener('click', handleClick);
-            CorgiScroll.pagination.el.remove();
+            if (hasDots) {
+                CorgiScroll.pagination.el.removeEventListener('click', handleClick);
+                CorgiScroll.pagination.el.remove();
+            }
         }
         on('update_active', (currentIndex) => {
             CorgiScroll.pagination.el.children[current].classList.remove('active');
@@ -306,7 +315,6 @@
             this.go(this.active + 1);
         }
         prev() {
-            console.log(this.active - 1);
             if ((this.active - 1) < 0)
                 return;
             this.go(this.active - 1);
