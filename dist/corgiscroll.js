@@ -59,7 +59,7 @@
             // console.log(`Goal: ${goal}`);
             // console.log(`scrollW ${CorgiScroll.slideContainer.scrollWidth}`);
             // console.log(`w ${rootBounds.width}`);
-            console.log(`Max Left Size: ${CorgiScroll.slideContainer.scrollWidth - rootBounds.width}`);
+            // console.log(`Max Left Size: ${CorgiScroll.slideContainer.scrollWidth - rootBounds.width}`);
             if (goal >= getMaxScroll() || curr <= goal)
                 return curr;
             else
@@ -119,7 +119,7 @@
             if (pagination.el === null) {
                 return;
             }
-            console.log(Array.from(pagination.slides));
+            // console.log(Array.from(pagination.slides));
             const currentIndex = Array.from(pagination.slides).findIndex((slide /* TODO: Fix this type */) => {
                 return slide.snapPoint === closestNumber();
             });
@@ -249,7 +249,6 @@
                 // This was doing something but I forgot what
                 // (size - prev) < (root.scrollWidth - rootRect.width)
                 if (size < (root.scrollWidth - rootRect.width) || size < getMaxScroll()) {
-                    console.log(index);
                     page++;
                     size += slideWidth(slide);
                     slideWidth(slide);
@@ -259,20 +258,22 @@
                     });
                 }
                 else {
-                    console.log('hitting here');
+                    size += slideWidth(slide);
                     if (!pagination.length)
                         return;
-                    console.log(getMaxScroll());
+                    // Checks if max scroll is gonna be the same as the previous one. 
+                    // If it is then just ignore this because you can't scroll anymore
+                    if ((getMaxScroll() - 1) === pagination[index - 1].snapPoint) {
+                        return;
+                    }
                     pagination.push({
                         el: slide,
                         snapPoint: (getMaxScroll() - 1)
                     });
-                    console.log('and here!!');
-                    console.log(CorgiScroll.slideContainer.scrollWidth - CorgiScroll.slideContainer.getBoundingClientRect().width);
-                    // pagination[pagination.length - 1].snapPoint = (CorgiScroll.slideContainer.scrollWidth - CorgiScroll.slideContainer.getBoundingClientRect().width)
                 }
             });
         }
+        console.log(pagination);
         return pagination;
     }
 
@@ -338,7 +339,7 @@
             const getLeftPosition = (index) => {
                 return this.pagination.slides[index].snapPoint;
             };
-            console.log(getLeftPosition(index));
+            // console.log(getLeftPosition(index));
             this.slideContainer.scrollTo({
                 top: 0,
                 left: getLeftPosition(index),

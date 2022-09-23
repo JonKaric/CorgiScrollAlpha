@@ -96,8 +96,8 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
             // This was doing something but I forgot what
             // (size - prev) < (root.scrollWidth - rootRect.width)
 
+
             if (size < (root.scrollWidth - rootRect.width) || size < getMaxScroll() ) {
-                console.log(index);
                 
                 page++
     
@@ -109,15 +109,34 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
                 })
             } 
             else {
-                if (!pagination.length) return
+
+                 
+    
+                size += slideWidth(slide);
+
+                
+                 if (!pagination.length) return
+
+                
+                // Checks if max scroll is gonna be the same as the previous one. 
+                // If it is then just ignore this because you can't scroll anymore
+                if ((getMaxScroll() - 1) === pagination[index - 1].snapPoint)  {
+                    return;
+                }
+
 
                 pagination.push({
                     el: slide,
                     snapPoint: (getMaxScroll() - 1)
                 })
+
+ 
             }
         })
     }
+
+    console.log(pagination);
+    
 
     return pagination
 }
