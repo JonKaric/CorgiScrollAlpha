@@ -71,7 +71,7 @@ export default class CorgiScroll {
             return this.pagination.slides[index].snapPoint 
         }
 
-        console.log(getLeftPosition(index));
+        // console.log(getLeftPosition(index));
         
 
         this.slideContainer.scrollTo({
@@ -113,7 +113,7 @@ export default class CorgiScroll {
             
             this.emit('resize')
         }
-    }, 200)
+    }, 500)
 
 
     initialiseSlideClasses() {

@@ -126,7 +126,7 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
         if (pagination.el === null) { return }
 
         
-        console.log(Array.from(pagination.slides));
+        // console.log(Array.from(pagination.slides));
         
         const currentIndex = Array.from(pagination.slides).findIndex((slide: any /* TODO: Fix this type */) => {
             return slide.snapPoint === closestNumber();
