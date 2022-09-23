@@ -36,12 +36,12 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
         // console.log(`Curr: ${curr}`);
         // console.log(`Prev: ${prev}`);
 
-        // console.log(`Goal: ${goal}`);
+        console.log(`Goal: ${goal}`);
         // console.log(`scrollW ${CorgiScroll.slideContainer.scrollWidth}`);
         // console.log(`w ${rootBounds.width}`);
         
 
-        // console.log(`Max Left Size: ${CorgiScroll.slideContainer.scrollWidth - rootBounds.width}`);
+        console.log(`Max Left Size: ${CorgiScroll.slideContainer.scrollWidth - rootBounds.width}`);
         
         
         if (goal >= getMaxScroll() || curr <= goal) return curr
@@ -58,7 +58,7 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
             pagination.slides.map(
                 (page: any /* TODO: Fix this type */) => page.snapPoint
             ), 
-            CorgiScroll.slideContainer.scrollLeft
+            Math.ceil(CorgiScroll.slideContainer.scrollLeft)
         )
     }
 

@@ -56,10 +56,10 @@
         const closest = (array, goal) => array.reduce((prev, curr) => {
             // console.log(`Curr: ${curr}`);
             // console.log(`Prev: ${prev}`);
-            // console.log(`Goal: ${goal}`);
+            console.log(`Goal: ${goal}`);
             // console.log(`scrollW ${CorgiScroll.slideContainer.scrollWidth}`);
             // console.log(`w ${rootBounds.width}`);
-            // console.log(`Max Left Size: ${CorgiScroll.slideContainer.scrollWidth - rootBounds.width}`);
+            console.log(`Max Left Size: ${CorgiScroll.slideContainer.scrollWidth - rootBounds.width}`);
             if (goal >= getMaxScroll() || curr <= goal)
                 return curr;
             else
@@ -67,7 +67,7 @@
         });
         const closestNumber = () => {
             //console.log(pagination.slides);
-            return closest(pagination.slides.map((page /* TODO: Fix this type */) => page.snapPoint), CorgiScroll.slideContainer.scrollLeft);
+            return closest(pagination.slides.map((page /* TODO: Fix this type */) => page.snapPoint), Math.ceil(CorgiScroll.slideContainer.scrollLeft));
         };
         /**
          * Initialise the component
@@ -224,7 +224,7 @@
          * @returns The maximum scroll possible
         */
         const getMaxScroll = () => {
-            return CorgiScroll.slideContainer.scrollWidth - rootRect.width;
+            return Math.ceil(CorgiScroll.slideContainer.scrollWidth - rootRect.width);
         };
         if (CorgiScroll.options.mode === 'slide') {
             generateSlide();
@@ -246,21 +246,28 @@
             });
         }
         function generateSlide() {
+            let prev = 0;
             Array.from(root.children).forEach((slide, index) => {
                 // This was doing something but I forgot what
                 // (size - prev) < (root.scrollWidth - rootRect.width)
                 if (size < (root.scrollWidth - rootRect.width) || size < getMaxScroll()) {
+                    if (size > getMaxScroll() && (size - prev) < getMaxScroll()) {
+                        console.log(pagination);
+                        pagination[pagination.length - 1].snapPoint = getMaxScroll();
+                        return;
+                    }
                     page++;
                     size += slideWidth(slide);
-                    slideWidth(slide);
+                    prev = slideWidth(slide);
                     pagination.push({
                         el: slide,
                         snapPoint: getTriggerPosition(slide, index)
                     });
                 }
                 else {
+                    console.log('hitting here');
                     size += slideWidth(slide);
-                    if (!pagination.length)
+                    if (!pagination.length || size > getMaxScroll())
                         return;
                     // Checks if max scroll is gonna be the same as the previous one. 
                     // If it is then just ignore this because you can't scroll anymore
@@ -269,7 +276,7 @@
                     }
                     pagination.push({
                         el: slide,
-                        snapPoint: Math.ceil(getMaxScroll())
+                        snapPoint: getMaxScroll()
                     });
                 }
             });

@@ -60,7 +60,7 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
      * @returns The maximum scroll possible
     */
     const getMaxScroll = () => {
-        return CorgiScroll.slideContainer.scrollWidth - rootRect.width
+        return Math.ceil(CorgiScroll.slideContainer.scrollWidth - rootRect.width)
     }
     
 
@@ -98,6 +98,13 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
 
 
             if (size < (root.scrollWidth - rootRect.width) || size < getMaxScroll() ) {
+
+                if (size > getMaxScroll() && (size - prev) < getMaxScroll()) {
+                    console.log(pagination);
+                    
+                    pagination[pagination.length - 1].snapPoint = getMaxScroll();
+                    return;
+                }
                 
                 page++
     
@@ -110,12 +117,13 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
             } 
             else {
 
+                 console.log('hitting here');
                  
     
                 size += slideWidth(slide);
 
                 
-                 if (!pagination.length) return
+                 if (!pagination.length || size > getMaxScroll()) return
 
                 
                 // Checks if max scroll is gonna be the same as the previous one. 
@@ -127,7 +135,7 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
 
                 pagination.push({
                     el: slide,
-                    snapPoint: Math.ceil(getMaxScroll())
+                    snapPoint: getMaxScroll()
                 })
 
  
