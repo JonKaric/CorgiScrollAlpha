@@ -210,13 +210,14 @@
          * @returns {number} Size of the container
          */
         const getContainerSize = () => {
+            let size = 0;
             if (snapType === 'center') {
-                return page === 0 ? (rootRect.width / 2) : rootRect.width;
+                size = page === 0 ? (rootRect.width / 2) : rootRect.width;
             }
             else if (snapType === 'start') {
-                return rootRect.width;
+                size = rootRect.width;
             }
-            return 0;
+            return Math.ceil(size);
         };
         /**
          *
