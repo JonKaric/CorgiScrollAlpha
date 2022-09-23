@@ -264,12 +264,12 @@
                         return;
                     // Checks if max scroll is gonna be the same as the previous one. 
                     // If it is then just ignore this because you can't scroll anymore
-                    if ((getMaxScroll() - 1) === pagination[index - 1].snapPoint) {
+                    if ((getMaxScroll()) === pagination[index - 1].snapPoint) {
                         return;
                     }
                     pagination.push({
                         el: slide,
-                        snapPoint: Math.ceil((getMaxScroll() - 1))
+                        snapPoint: Math.ceil(getMaxScroll())
                     });
                 }
             });
