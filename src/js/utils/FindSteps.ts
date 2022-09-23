@@ -7,9 +7,7 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
     const snapType: string  = options.snapType
     const rootRect = root.getBoundingClientRect();
 
-    console.log(rootRect);
     
-
 
     /**
      * @param { Element } element - Element to get the width of
@@ -89,9 +87,6 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
 
     function generateSlide() {
         let prev = 0
-
-        console.log(rootRect.width);
-        console.log(getMaxScroll());
         
         
         if (getMaxScroll() === 0) {
@@ -114,8 +109,6 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
                 // console.log(index);
                 
                 if (size > getMaxScroll() && (size - prev) < getMaxScroll()) {
-                    console.log(pagination);
-                    
                     pagination[pagination.length - 1].snapPoint = getMaxScroll();
                     return;
                 }
@@ -137,9 +130,6 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
                 // console.log('hitting here');
 
                 size += slideWidth(slide);
-
-                console.log(pagination.length);
-                
                 
                 if (!pagination.length) return
 
@@ -160,12 +150,6 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
             }
         })
     }
-
-    console.log(pagination);
-    
-    // if (pagination.length == 1) {
-    //     return null;
-    // }
 
     return pagination
 }

@@ -38,12 +38,12 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
         // console.log(`Curr: ${curr}`);
         // console.log(`Prev: ${prev}`);
 
-        console.log(`Goal: ${goal}`);
+        // console.log(`Goal: ${goal}`);
         // console.log(`scrollW ${CorgiScroll.slideContainer.scrollWidth}`);
         // console.log(`w ${rootBounds.width}`);
         
 
-        console.log(`Max Left Size: ${CorgiScroll.slideContainer.scrollWidth - rootBounds().width}`);
+        // console.log(`Max Left Size: ${CorgiScroll.slideContainer.scrollWidth - rootBounds().width}`);
         
         
         if (goal >= getMaxScroll() || curr <= goal) return curr
@@ -126,17 +126,10 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
 
     on('scroll', () => {
         if (pagination.el === null) { return }
-        console.log(Array.from(pagination.slides));
-        
-        
         const currentIndex = Array.from(pagination.slides).findIndex((slide: any /* TODO: Fix this type */) => {
             return slide.snapPoint === closestNumber();
         });
 
-        // console.log(currentIndex);
-        
-        
-        
         emit('update_active', currentIndex)
     })
 

@@ -58,10 +58,10 @@
         const closest = (array, goal) => array.reduce((prev, curr) => {
             // console.log(`Curr: ${curr}`);
             // console.log(`Prev: ${prev}`);
-            console.log(`Goal: ${goal}`);
+            // console.log(`Goal: ${goal}`);
             // console.log(`scrollW ${CorgiScroll.slideContainer.scrollWidth}`);
             // console.log(`w ${rootBounds.width}`);
-            console.log(`Max Left Size: ${CorgiScroll.slideContainer.scrollWidth - rootBounds().width}`);
+            // console.log(`Max Left Size: ${CorgiScroll.slideContainer.scrollWidth - rootBounds().width}`);
             if (goal >= getMaxScroll() || curr <= goal)
                 return curr;
             else
@@ -121,11 +121,9 @@
             if (pagination.el === null) {
                 return;
             }
-            console.log(Array.from(pagination.slides));
             const currentIndex = Array.from(pagination.slides).findIndex((slide /* TODO: Fix this type */) => {
                 return slide.snapPoint === closestNumber();
             });
-            // console.log(currentIndex);
             emit('update_active', currentIndex);
         });
         function destroy() {
@@ -182,7 +180,6 @@
         let page = 0;
         const snapType = options.snapType;
         const rootRect = root.getBoundingClientRect();
-        console.log(rootRect);
         /**
          * @param { Element } element - Element to get the width of
          * @returns { number } Total calculated width including all margins, borders & padding
@@ -249,8 +246,6 @@
         }
         function generateSlide() {
             let prev = 0;
-            console.log(rootRect.width);
-            console.log(getMaxScroll());
             if (getMaxScroll() === 0) {
                 return;
             }
@@ -262,7 +257,6 @@
                 if (size <= getMaxScroll()) {
                     // console.log(index);
                     if (size > getMaxScroll() && (size - prev) < getMaxScroll()) {
-                        console.log(pagination);
                         pagination[pagination.length - 1].snapPoint = getMaxScroll();
                         return;
                     }
@@ -278,7 +272,6 @@
                 else {
                     // console.log('hitting here');
                     size += slideWidth(slide);
-                    console.log(pagination.length);
                     if (!pagination.length)
                         return;
                     //Checks if max scroll is gonna be the same as the previous one. 
@@ -293,10 +286,6 @@
                 }
             });
         }
-        console.log(pagination);
-        // if (pagination.length == 1) {
-        //     return null;
-        // }
         return pagination;
     }
 
