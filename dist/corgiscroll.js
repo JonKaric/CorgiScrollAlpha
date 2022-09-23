@@ -200,9 +200,9 @@
             if (index === 0)
                 return 0;
             if (snapType === 'center')
-                return (box.x - rootRect.x) - (rootRect.width / 2);
+                return Math.ceil((box.x - rootRect.x) - (rootRect.width / 2));
             else if (snapType === 'start')
-                return box.x - rootRect.x + root.scrollLeft;
+                return Math.ceil(box.x - rootRect.x + root.scrollLeft);
             return null;
         };
         /**
@@ -254,7 +254,7 @@
                     slideWidth(slide);
                     pagination.push({
                         el: slide,
-                        snapPoint: getTriggerPosition(slide, index),
+                        snapPoint: getTriggerPosition(slide, index)
                     });
                 }
                 else {
@@ -268,7 +268,7 @@
                     }
                     pagination.push({
                         el: slide,
-                        snapPoint: (getMaxScroll() - 1)
+                        snapPoint: Math.ceil((getMaxScroll() - 1))
                     });
                 }
             });
