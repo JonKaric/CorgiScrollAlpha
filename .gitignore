@@ -27,6 +27,6 @@ dist-ssr
 temp
 public
 
-src/utils/debounce.js
 READMENEW.md
-index.html
+index.php
+/partials

@@ -15,7 +15,9 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
      */
     let current: number = 0;
 
-    let rootBounds = CorgiScroll.slideContainer.getBoundingClientRect();
+    let rootBounds = () => {
+        return CorgiScroll.slideContainer.getBoundingClientRect();
+    }
     
     
     /**
@@ -41,7 +43,7 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
         // console.log(`w ${rootBounds.width}`);
         
 
-        console.log(`Max Left Size: ${CorgiScroll.slideContainer.scrollWidth - rootBounds.width}`);
+        console.log(`Max Left Size: ${CorgiScroll.slideContainer.scrollWidth - rootBounds().width}`);
         
         
         if (goal >= getMaxScroll() || curr <= goal) return curr
@@ -124,9 +126,8 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
 
     on('scroll', () => {
         if (pagination.el === null) { return }
-
+        console.log(Array.from(pagination.slides));
         
-        // console.log(Array.from(pagination.slides));
         
         const currentIndex = Array.from(pagination.slides).findIndex((slide: any /* TODO: Fix this type */) => {
             return slide.snapPoint === closestNumber();

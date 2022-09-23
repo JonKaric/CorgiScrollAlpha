@@ -16,8 +16,8 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
      * @returns { number } Total calculated width including all margins, borders & padding
      */
     const slideWidth = (element: Element): number => {            
-        const style = getComputedStyle(element);
-        return parseInt(style.getPropertyValue('margin-left')) + parseInt(style.getPropertyValue('margin-left')) + element.getBoundingClientRect().width
+        const style = getComputedStyle(element);        
+        return parseInt(style.getPropertyValue('margin-left')) + parseInt(style.getPropertyValue('margin-right')) + element.getBoundingClientRect().width
     }
 
 
@@ -90,21 +90,38 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
     function generateSlide() {
         let prev = 0
 
+        console.log(rootRect.width);
+        console.log(getMaxScroll());
+        
+        
+        if (getMaxScroll() === 0) {
+            return;
+        }
+
         Array.from(root.children).forEach((slide, index) => {
 
 
             // This was doing something but I forgot what
             // (size - prev) < (root.scrollWidth - rootRect.width)
 
+            // console.log(size);
+            // console.log( getMaxScroll());
+            
+            
 
-            if (size < (root.scrollWidth - rootRect.width) || size < getMaxScroll() ) {
+            if (size <= getMaxScroll() ) {
 
+                // console.log(index);
+                
                 if (size > getMaxScroll() && (size - prev) < getMaxScroll()) {
                     console.log(pagination);
                     
                     pagination[pagination.length - 1].snapPoint = getMaxScroll();
                     return;
                 }
+
+                // console.log(size);
+                
                 
                 page++
     
@@ -117,16 +134,17 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
             } 
             else {
 
-                 console.log('hitting here');
-                 
-    
+                // console.log('hitting here');
+
                 size += slideWidth(slide);
 
+                console.log(pagination.length);
                 
-                 if (!pagination.length || size > getMaxScroll()) return
+                
+                if (!pagination.length) return
 
                 
-                // Checks if max scroll is gonna be the same as the previous one. 
+                //Checks if max scroll is gonna be the same as the previous one. 
                 // If it is then just ignore this because you can't scroll anymore
                 if ((getMaxScroll()) === pagination[index - 1].snapPoint)  {
                     return;
@@ -145,6 +163,9 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
 
     console.log(pagination);
     
+    // if (pagination.length == 1) {
+    //     return null;
+    // }
 
     return pagination
 }

@@ -39,7 +39,9 @@
          * The active pagination item
          */
         let current = 0;
-        let rootBounds = CorgiScroll.slideContainer.getBoundingClientRect();
+        let rootBounds = () => {
+            return CorgiScroll.slideContainer.getBoundingClientRect();
+        };
         /**
          *
          * @returns The maximum scroll possible
@@ -59,7 +61,7 @@
             console.log(`Goal: ${goal}`);
             // console.log(`scrollW ${CorgiScroll.slideContainer.scrollWidth}`);
             // console.log(`w ${rootBounds.width}`);
-            console.log(`Max Left Size: ${CorgiScroll.slideContainer.scrollWidth - rootBounds.width}`);
+            console.log(`Max Left Size: ${CorgiScroll.slideContainer.scrollWidth - rootBounds().width}`);
             if (goal >= getMaxScroll() || curr <= goal)
                 return curr;
             else
@@ -119,7 +121,7 @@
             if (pagination.el === null) {
                 return;
             }
-            // console.log(Array.from(pagination.slides));
+            console.log(Array.from(pagination.slides));
             const currentIndex = Array.from(pagination.slides).findIndex((slide /* TODO: Fix this type */) => {
                 return slide.snapPoint === closestNumber();
             });
@@ -187,7 +189,7 @@
          */
         const slideWidth = (element) => {
             const style = getComputedStyle(element);
-            return parseInt(style.getPropertyValue('margin-left')) + parseInt(style.getPropertyValue('margin-left')) + element.getBoundingClientRect().width;
+            return parseInt(style.getPropertyValue('margin-left')) + parseInt(style.getPropertyValue('margin-right')) + element.getBoundingClientRect().width;
         };
         /**
          *
@@ -247,15 +249,24 @@
         }
         function generateSlide() {
             let prev = 0;
+            console.log(rootRect.width);
+            console.log(getMaxScroll());
+            if (getMaxScroll() === 0) {
+                return;
+            }
             Array.from(root.children).forEach((slide, index) => {
                 // This was doing something but I forgot what
                 // (size - prev) < (root.scrollWidth - rootRect.width)
-                if (size < (root.scrollWidth - rootRect.width) || size < getMaxScroll()) {
+                // console.log(size);
+                // console.log( getMaxScroll());
+                if (size <= getMaxScroll()) {
+                    // console.log(index);
                     if (size > getMaxScroll() && (size - prev) < getMaxScroll()) {
                         console.log(pagination);
                         pagination[pagination.length - 1].snapPoint = getMaxScroll();
                         return;
                     }
+                    // console.log(size);
                     page++;
                     size += slideWidth(slide);
                     prev = slideWidth(slide);
@@ -265,11 +276,12 @@
                     });
                 }
                 else {
-                    console.log('hitting here');
+                    // console.log('hitting here');
                     size += slideWidth(slide);
-                    if (!pagination.length || size > getMaxScroll())
+                    console.log(pagination.length);
+                    if (!pagination.length)
                         return;
-                    // Checks if max scroll is gonna be the same as the previous one. 
+                    //Checks if max scroll is gonna be the same as the previous one. 
                     // If it is then just ignore this because you can't scroll anymore
                     if ((getMaxScroll()) === pagination[index - 1].snapPoint) {
                         return;
@@ -282,6 +294,9 @@
             });
         }
         console.log(pagination);
+        // if (pagination.length == 1) {
+        //     return null;
+        // }
         return pagination;
     }
 
