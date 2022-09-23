@@ -1,5 +1,6 @@
 import { Options, Pagination } from '../types/types';
 import Events from './../Events'
+import { FindSteps } from '../utils/FindSteps';
 
 export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pagination ) {
     
@@ -13,6 +14,8 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
      * The active pagination item
      */
     let current: number = 0;
+
+    let rootBounds = CorgiScroll.slideContainer.getBoundingClientRect();
     
     
     /**
@@ -20,7 +23,7 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
      * @returns The maximum scroll possible
      */
     const getMaxScroll = () => {
-        return CorgiScroll.slideContainer.scrollWidth - options.rootBounds.width
+        return CorgiScroll.slideContainer.scrollWidth - rootBounds.width
     }
 
     /**
@@ -30,12 +33,27 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
      * @returns The number that is closest to your goal in the array 
      */
     const closest = (array: (number)[], goal: number) => array.reduce((prev, curr) => {
+        // console.log(`Curr: ${curr}`);
+        // console.log(`Prev: ${prev}`);
+
+        // console.log(`Goal: ${goal}`);
+        // console.log(`scrollW ${CorgiScroll.slideContainer.scrollWidth}`);
+        // console.log(`w ${rootBounds.width}`);
+        
+
+        // console.log(`Max Left Size: ${CorgiScroll.slideContainer.scrollWidth - rootBounds.width}`);
+        
+        
         if (goal >= getMaxScroll() || curr <= goal) return curr
         else return prev
     })
 
 
     const closestNumber = () => {
+        
+        
+        //console.log(pagination.slides);
+        
         return closest(
             pagination.slides.map(
                 (page: any /* TODO: Fix this type */) => page.snapPoint
@@ -50,13 +68,12 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
     init()
 
 
-    function init() {
+    function init() {        
         build()
         initEvents()
     }
 
     function build() {
-
         
         if (pagination.slides.length == 0) {
             pagination.el = null;
@@ -65,10 +82,6 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
 
         const el = document.createElement('div')
         el.classList.add('corgiscroll-pagination')
-
-
-        
-        
 
         const currentIndex = Array.from(pagination.slides).findIndex((slide: any /* TODO: Fix this type */) => {
             return slide.snapPoint === closestNumber();
@@ -81,7 +94,7 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
             ${
                 // @ts-ignore
                 pagination.slides.map((slide, index: number) => {
-                    if (index === currentIndex) return `<button class="corgiscroll__pagination-dot active" data-index="${index}"><span class="">${index}</span></button>`
+                    if (index === current) return `<button class="corgiscroll__pagination-dot active" data-index="${index}"><span class="">${index}</span></button>`
                     return `<button class="corgiscroll__pagination-dot" data-index="${index}"><span class="">${index}</span></button>`
                 }).join('')
             }
@@ -91,7 +104,7 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
         pagination.el = el;
         CorgiScroll.slideContainer.after(el)
 
-        emit('update_active', currentIndex)
+        emit('update_active', current)
     }
 
     function initEvents() {
@@ -110,11 +123,18 @@ export function PaginationDot(CorgiScroll: any, options: Options, pagination: Pa
     }
 
     on('scroll', () => {
-        if (pagination.el === null) return
+        if (pagination.el === null) { return }
 
+        
+        console.log(Array.from(pagination.slides));
+        
         const currentIndex = Array.from(pagination.slides).findIndex((slide: any /* TODO: Fix this type */) => {
             return slide.snapPoint === closestNumber();
         });
+
+        // console.log(currentIndex);
+        
+        
         
         emit('update_active', currentIndex)
     })

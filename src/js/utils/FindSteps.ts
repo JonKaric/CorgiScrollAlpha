@@ -1,11 +1,14 @@
 import { Options } from '../types/types';
 
 export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement) {
-    let pagination: any= [];
+    let pagination: any = [];
     let size: number        = 0
     let page: number        = 0
     const snapType: string  = options.snapType
     const rootRect = root.getBoundingClientRect();
+
+    console.log(rootRect);
+    
 
 
     /**
@@ -75,7 +78,7 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
     }
 
     function generateSlide() {
-        let prev = 0;
+        let prev = 0
 
         Array.from(root.children).forEach((slide, index) => {
 
@@ -90,7 +93,10 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
                 })
             } 
             else {
-                pagination[pagination.length -1].snapPoint = root.scrollWidth;
+                if (!pagination.length) return
+
+                
+                pagination[pagination.length - 1].snapPoint = (CorgiScroll.slideContainer.scrollWidth - CorgiScroll.slideContainer.getBoundingClientRect().width)
             }
         })
     }

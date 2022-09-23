@@ -34,5 +34,4 @@ export function Arrows(CorgiScroll: any, options: Options) {
             initEvents();
         }
     }
-
 }

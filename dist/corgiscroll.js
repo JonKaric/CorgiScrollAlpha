@@ -39,12 +39,13 @@
          * The active pagination item
          */
         let current = 0;
+        let rootBounds = CorgiScroll.slideContainer.getBoundingClientRect();
         /**
          *
          * @returns The maximum scroll possible
          */
         const getMaxScroll = () => {
-            return CorgiScroll.slideContainer.scrollWidth - options.rootBounds.width;
+            return CorgiScroll.slideContainer.scrollWidth - rootBounds.width;
         };
         /**
          *
@@ -53,12 +54,19 @@
          * @returns The number that is closest to your goal in the array
          */
         const closest = (array, goal) => array.reduce((prev, curr) => {
+            // console.log(`Curr: ${curr}`);
+            // console.log(`Prev: ${prev}`);
+            // console.log(`Goal: ${goal}`);
+            // console.log(`scrollW ${CorgiScroll.slideContainer.scrollWidth}`);
+            // console.log(`w ${rootBounds.width}`);
+            // console.log(`Max Left Size: ${CorgiScroll.slideContainer.scrollWidth - rootBounds.width}`);
             if (goal >= getMaxScroll() || curr <= goal)
                 return curr;
             else
                 return prev;
         });
         const closestNumber = () => {
+            //console.log(pagination.slides);
             return closest(pagination.slides.map((page /* TODO: Fix this type */) => page.snapPoint), CorgiScroll.slideContainer.scrollLeft);
         };
         /**
@@ -84,7 +92,7 @@
             ${
         // @ts-ignore
         pagination.slides.map((slide, index) => {
-            if (index === currentIndex)
+            if (index === current)
                 return `<button class="corgiscroll__pagination-dot active" data-index="${index}"><span class="">${index}</span></button>`;
             return `<button class="corgiscroll__pagination-dot" data-index="${index}"><span class="">${index}</span></button>`;
         }).join('')}
@@ -92,7 +100,7 @@
             el.innerHTML = html;
             pagination.el = el;
             CorgiScroll.slideContainer.after(el);
-            emit('update_active', currentIndex);
+            emit('update_active', current);
         }
         function initEvents() {
             if (pagination.el) {
@@ -108,11 +116,14 @@
             }
         }
         on('scroll', () => {
-            if (pagination.el === null)
+            if (pagination.el === null) {
                 return;
+            }
+            console.log(Array.from(pagination.slides));
             const currentIndex = Array.from(pagination.slides).findIndex((slide /* TODO: Fix this type */) => {
                 return slide.snapPoint === closestNumber();
             });
+            // console.log(currentIndex);
             emit('update_active', currentIndex);
         });
         function destroy() {
@@ -169,6 +180,7 @@
         let page = 0;
         const snapType = options.snapType;
         const rootRect = root.getBoundingClientRect();
+        console.log(rootRect);
         /**
          * @param { Element } element - Element to get the width of
          * @returns { number } Total calculated width including all margins, borders & padding
@@ -238,7 +250,9 @@
                     });
                 }
                 else {
-                    pagination[pagination.length - 1].snapPoint = root.scrollWidth;
+                    if (!pagination.length)
+                        return;
+                    pagination[pagination.length - 1].snapPoint = (CorgiScroll.slideContainer.scrollWidth - CorgiScroll.slideContainer.getBoundingClientRect().width);
                 }
             });
         }
@@ -307,6 +321,7 @@
             const getLeftPosition = (index) => {
                 return this.pagination.slides[index].snapPoint;
             };
+            console.log(getLeftPosition(index));
             this.slideContainer.scrollTo({
                 top: 0,
                 left: getLeftPosition(index),
@@ -330,11 +345,12 @@
         handleResize = debounce(() => {
             if (this.windowWidth < window.innerWidth || this.windowWidth > window.innerWidth) {
                 this.windowWidth = window.innerWidth;
-                const calculatedSteps = FindSteps(this, this.options, this.slideContainer);
-                if (calculatedSteps.length > this.pagination.slides.length || calculatedSteps.length < this.pagination.slides.length) {
-                    this.pagination.slides = calculatedSteps;
-                    this.emit('refresh');
-                }
+                // const calculatedSteps = FindSteps(this, this.options, this.slideContainer);
+                // if (calculatedSteps.length > this.pagination.slides.length || calculatedSteps.length < this.pagination.slides.length) {
+                //     this.pagination.slides = FindSteps(this, this.options, this.slideContainer);
+                // }
+                this.pagination.slides = FindSteps(this, this.options, this.slideContainer);
+                this.emit('refresh');
                 this.emit('resize');
             }
         }, 200);

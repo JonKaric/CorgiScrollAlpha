@@ -71,6 +71,9 @@ export default class CorgiScroll {
             return this.pagination.slides[index].snapPoint 
         }
 
+        console.log(getLeftPosition(index));
+        
+
         this.slideContainer.scrollTo({
             top: 0,
             left: getLeftPosition(index),
@@ -98,12 +101,16 @@ export default class CorgiScroll {
         if (this.windowWidth < window.innerWidth || this.windowWidth > window.innerWidth) {
             this.windowWidth = window.innerWidth
 
-            const calculatedSteps = FindSteps(this, this.options, this.slideContainer);
-            if (calculatedSteps.length > this.pagination.slides.length || calculatedSteps.length < this.pagination.slides.length) {
-                this.pagination.slides = calculatedSteps
-                this.emit('refresh')
-            }
+            // const calculatedSteps = FindSteps(this, this.options, this.slideContainer);
+            // if (calculatedSteps.length > this.pagination.slides.length || calculatedSteps.length < this.pagination.slides.length) {
+            //     this.pagination.slides = FindSteps(this, this.options, this.slideContainer);
+            // }
 
+            this.pagination.slides = FindSteps(this, this.options, this.slideContainer);
+
+
+            this.emit('refresh')
+            
             this.emit('resize')
         }
     }, 200)
