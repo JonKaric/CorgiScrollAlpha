@@ -31,8 +31,8 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
         const box = el.getBoundingClientRect()
 
         if (index === 0) return 0
-        if (snapType === 'center') return (box.x - rootRect.x) - (rootRect.width / 2)
-        else if (snapType === 'start') return box.x - rootRect.x + root.scrollLeft
+        if (snapType === 'center') return Math.ceil((box.x - rootRect.x) - (rootRect.width / 2))
+        else if (snapType === 'start') return Math.ceil(box.x - rootRect.x + root.scrollLeft)
         
         return null
     }
@@ -105,7 +105,7 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
                 prev = slideWidth(slide);
                 pagination.push({
                     el: slide,
-                    snapPoint: getTriggerPosition(slide, index),
+                    snapPoint: getTriggerPosition(slide, index)
                 })
             } 
             else {
@@ -127,7 +127,7 @@ export function FindSteps(CorgiScroll: any, options: Options, root: HTMLElement)
 
                 pagination.push({
                     el: slide,
-                    snapPoint: (getMaxScroll() - 1)
+                    snapPoint: Math.ceil((getMaxScroll() - 1))
                 })
 
  
